@@ -28,6 +28,7 @@ const formularTitel = document.getElementById('formular-titel');
 const abbrechenButton = document.getElementById('abbrechen-button');
 const suchfeld = document.getElementById('suche');
 const statusFilter = document.getElementById('status-filter');
+const exportButton = document.getElementById('export-button');
 
 // Text- und Auswahlfelder: Name in PocketBase = id im HTML
 const FELDER = [
@@ -282,6 +283,65 @@ function filterAnwenden() {
 suchfeld.addEventListener('input', filterAnwenden);
 statusFilter.addEventListener('change', filterAnwenden);
 
+// ===== CSV-Export =====
+
+// Macht aus einem Wert ein sicheres CSV-Feld
+function csvFeld(wert) {
+  let text = String(wert ?? '');
+
+  // Schutz vor CSV-Injection: Excel würde Text, der mit = + - @ beginnt,
+  // als Formel ausführen. Ein vorangestelltes ' macht daraus normalen Text.
+  if (/^[=+\-@]/.test(text)) {
+    text = "'" + text;
+  }
+
+  // Anführungszeichen im Text verdoppeln und das Feld in Anführungszeichen setzen
+  return '"' + text.replaceAll('"', '""') + '"';
+}
+
+// Erzeugt die CSV-Datei aus allen Einträgen und startet den Download
+function csvExportieren() {
+  const kopfzeile = [
+    'Bezeichnung', 'Zweck', 'Rechtsgrundlage', 'Betroffene Personen',
+    'Datenkategorien', 'Empfänger', 'Drittlandübermittlung', 'Löschfrist',
+    'Abteilung', 'Status', 'Letzte Prüfung'
+  ];
+
+  // Jeder Eintrag wird zu einer Liste von Werten, in derselben Reihenfolge wie die Kopfzeile
+  const datenzeilen = alleEintraege.map(e => [
+    e.bezeichnung,
+    e.zweck,
+    RECHTSGRUNDLAGEN[e.rechtsgrundlage],
+    e.betroffene_personen,
+    e.datenkategorien,
+    e.empfaenger,
+    e.drittland ? 'Ja' : 'Nein',
+    e.loeschfrist,
+    e.abteilung,
+    STATUS_TEXTE[e.status],
+    e.letzte_pruefung ? datumFormatieren(e.letzte_pruefung) : ''
+  ]);
+
+  // Alle Zeilen zu einem Text zusammenbauen:
+  // Felder mit Semikolon trennen, Zeilen mit Zeilenumbruch
+  const csv = [kopfzeile, ...datenzeilen]
+    .map(werte => werte.map(csvFeld).join(';'))
+    .join('\r\n');
+
+  // Datei im Browser erzeugen. Das unsichtbare Zeichen \uFEFF (BOM)
+  // sorgt dafür, dass Excel die Umlaute richtig anzeigt.
+  const datei = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+
+  // Einen unsichtbaren Download-Link erzeugen, anklicken und wieder aufräumen
+  const url = URL.createObjectURL(datei);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'verarbeitungsverzeichnis.csv';
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+exportButton.addEventListener('click', csvExportieren);
 
 // ===== Start: beim Öffnen der Seite sofort laden =====
 eintraegeLaden();
