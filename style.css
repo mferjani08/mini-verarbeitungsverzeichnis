@@ -30,7 +30,6 @@ body {
 }
 
 
-
 /* ===== Kopfbereich ===== */
 header {
   background: var(--farbe-primaer);
@@ -48,6 +47,18 @@ header p {
   margin: 0.25rem 0 0;
   opacity: 0.85;
 }
+
+/* Leiste mit E-Mail und Abmelden-Button im Kopfbereich */
+.benutzer-leiste {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+
 
 /* ===== Hauptbereich: mittig, maximal 900px breit ===== */
 main {
@@ -70,6 +81,55 @@ main {
   font-size: 1.25rem;
 }
 
+
+/* ===== Login ===== */
+/* Login-Kasten schmal und mittig */
+.login {
+  max-width: 420px;
+  margin: 2rem auto;
+}
+
+#login-formular {
+  display: grid;
+  gap: 1rem;
+}
+
+/* Fehlermeldung in Rot */
+.fehler {
+  margin: 0;
+  color: var(--farbe-gefahr);
+  font-weight: 600;
+}
+
+
+/* ===== Übersicht mit Zahlen ===== */
+/* Handy: 2 x 2 Kästchen */
+.statistik {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.zahl-box {
+  background: var(--farbe-karte);
+  border: 1px solid var(--farbe-rand);
+  border-radius: var(--radius);
+  padding: 1rem;
+  text-align: center;
+}
+
+.zahl {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--farbe-primaer);
+}
+
+.zahl-text {
+  font-size: 0.9rem;
+  color: var(--farbe-text-hell);
+}
 
 
 /* ===== Formular: auf dem Handy eine Spalte ===== */
@@ -99,9 +159,12 @@ button {
   font: inherit;
 }
 
+/* Einheitliches Aussehen aller Eingabefelder */
 input[type="text"],
 input[type="date"],
 input[type="search"],
+input[type="email"],
+input[type="password"],
 select,
 textarea {
   width: 100%;
@@ -134,6 +197,7 @@ textarea:focus {
 .feld.checkbox label {
   font-weight: normal;
 }
+
 
 /* ===== Buttons ===== */
 .buttons {
@@ -174,8 +238,7 @@ button:hover {
 }
 
 
-
-/* ===== Suche und Filter ===== */
+/* ===== Suche, Filter und Export ===== */
 .filterleiste {
   display: flex;
   flex-wrap: wrap;
@@ -190,6 +253,7 @@ button:hover {
 .filterleiste select {
   flex: 0 1 180px;
 }
+
 
 /* ===== Liste der Einträge (wird von app.js gefüllt) ===== */
 #liste {
@@ -255,15 +319,35 @@ button:hover {
   color: #1b6b3a;
 }
 
+/* Warnhinweis bei überfälliger Prüfung */
+.hinweis {
+  margin: 0.5rem 0 0;
+  padding: 0.4rem 0.6rem;
+  background: #fff4e5;
+  color: #8a4b00;
+  border-left: 4px solid #f59e0b;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
 /* Text, wenn keine Einträge gefunden wurden */
 .leer {
   color: var(--farbe-text-hell);
 }
 
 
-
-/* ===== Ab 700px Breite: Formular in zwei Spalten ===== */
+/* ===== Größere Bildschirme (ab 700px Breite) ===== */
 @media (min-width: 700px) {
+  header h1 {
+    font-size: 2rem;
+  }
+
+  /* Übersicht: alle 4 Kästchen in einer Reihe */
+  .statistik {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Formular in zwei Spalten */
   #formular {
     grid-template-columns: 1fr 1fr;
   }
@@ -274,53 +358,4 @@ button:hover {
   .buttons {
     grid-column: 1 / -1;
   }
-
-  header h1 {
-    font-size: 2rem;
-  }
 }
-/* ===== Übersicht mit Zahlen ===== */
-/* Handy: 2 x 2 Kästchen */
-.statistik {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-}
-
-.zahl-box {
-  background: var(--farbe-karte);
-  border: 1px solid var(--farbe-rand);
-  border-radius: var(--radius);
-  padding: 1rem;
-  text-align: center;
-}
-
-.zahl {
-  display: block;
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--farbe-primaer);
-}
-
-.zahl-text {
-  font-size: 0.9rem;
-  color: var(--farbe-text-hell);
-}
-
-/* Ab 700px: alle 4 Kästchen in einer Reihe */
-@media (min-width: 700px) {
-  .statistik {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-     /* ===== Warnhinweis bei überfälliger Prüfung ===== */
-     .hinweis {
-       margin: 0.5rem 0 0;
-       padding: 0.4rem 0.6rem;
-       background: #fff4e5;
-       color: #8a4b00;
-       border-left: 4px solid #f59e0b;
-       border-radius: 4px;
-       font-size: 0.85rem;
-     }

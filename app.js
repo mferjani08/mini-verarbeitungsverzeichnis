@@ -22,6 +22,16 @@ const STATUS_TEXTE = {
 };
 
 // ===== Elemente aus dem HTML holen =====
+// Login und Benutzer
+const loginBereich = document.getElementById('login-bereich');
+const loginFormular = document.getElementById('login-formular');
+const loginFehler = document.getElementById('login-fehler');
+const appBereich = document.getElementById('app-bereich');
+const benutzerLeiste = document.getElementById('benutzer-leiste');
+const benutzerEmail = document.getElementById('benutzer-email');
+const logoutButton = document.getElementById('logout-button');
+
+// App
 const liste = document.getElementById('liste');
 const formular = document.getElementById('formular');
 const formularTitel = document.getElementById('formular-titel');
@@ -76,6 +86,56 @@ function pruefungUeberfaellig(datum) {
 function zeile(titel, wert) {
   return `<div><strong>${titel}:</strong> ${sicher(wert) || '–'}</div>`;
 }
+
+
+// ===== Anmeldung =====
+
+// Zeigt je nach Anmeldestatus das Login oder die App an
+function ansichtAktualisieren() {
+  // Das SDK merkt sich den Login im Browser; isValid prüft, ob er noch gültig ist
+  const angemeldet = pb.authStore.isValid;
+
+  loginBereich.hidden = angemeldet;
+  appBereich.hidden = !angemeldet;
+  benutzerLeiste.hidden = !angemeldet;
+
+  if (angemeldet) {
+    benutzerEmail.textContent = pb.authStore.record.email;
+    eintraegeLaden();
+  }
+}
+
+// Login-Formular abschicken
+loginFormular.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  loginFehler.hidden = true;
+
+  const email = document.getElementById('login-email').value.trim();
+  const passwort = document.getElementById('login-passwort').value;
+
+  try {
+    // Anmeldung bei PocketBase mit einem Benutzer aus der Collection "users"
+    await pb.collection('users').authWithPassword(email, passwort);
+    loginFormular.reset();
+    ansichtAktualisieren();
+  } catch (fehler) {
+    console.error('Anmeldung fehlgeschlagen:', fehler);
+    loginFehler.hidden = false;
+  }
+});
+
+// Abmelden
+logoutButton.addEventListener('click', () => {
+  // Login-Daten im Browser löschen
+  pb.authStore.clear();
+
+  // Geladene Daten aus der Seite entfernen, damit nach dem Abmelden nichts sichtbar bleibt
+  alleEintraege = [];
+  liste.innerHTML = '';
+  formularZuruecksetzen();
+
+  ansichtAktualisieren();
+});
 
 
 // ===== Einträge von PocketBase laden =====
@@ -283,6 +343,7 @@ function filterAnwenden() {
 suchfeld.addEventListener('input', filterAnwenden);
 statusFilter.addEventListener('change', filterAnwenden);
 
+
 // ===== CSV-Export =====
 
 // Macht aus einem Wert ein sicheres CSV-Feld
@@ -343,5 +404,6 @@ function csvExportieren() {
 
 exportButton.addEventListener('click', csvExportieren);
 
-// ===== Start: beim Öffnen der Seite sofort laden =====
-eintraegeLaden();
+
+// ===== Start: je nach Anmeldestatus Login oder App anzeigen =====
+ansichtAktualisieren();
