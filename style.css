@@ -1,0 +1,281 @@
+/* ===== Farben und Abstände an einer Stelle (CSS-Variablen) ===== */
+:root {
+  --farbe-primaer: #1f5f8b;
+  --farbe-primaer-dunkel: #174a6d;
+  --farbe-hintergrund: #f4f6f8;
+  --farbe-karte: #ffffff;
+  --farbe-text: #1d2733;
+  --farbe-text-hell: #5b6875;
+  --farbe-rand: #d5dbe1;
+  --farbe-gefahr: #b42318;
+  --radius: 8px;
+}
+
+/* Breite inklusive Rand und Innenabstand berechnen */
+* {
+  box-sizing: border-box;
+}
+
+/* Elemente mit dem Attribut "hidden" immer verstecken */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  background: var(--farbe-hintergrund);
+  color: var(--farbe-text);
+  line-height: 1.5;
+}
+
+
+
+/* ===== Kopfbereich ===== */
+header {
+  background: var(--farbe-primaer);
+  color: white;
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+header p {
+  margin: 0.25rem 0 0;
+  opacity: 0.85;
+}
+
+/* ===== Hauptbereich: mittig, maximal 900px breit ===== */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Weiße Kästen für Formular und Liste */
+.karte {
+  background: var(--farbe-karte);
+  border: 1px solid var(--farbe-rand);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.karte h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+
+
+/* ===== Formular: auf dem Handy eine Spalte ===== */
+#formular {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+/* Ein Feld = Beschriftung über dem Eingabefeld */
+.feld {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.feld label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Formularelemente übernehmen die normale Schrift */
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="search"],
+select,
+textarea {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid var(--farbe-rand);
+  border-radius: var(--radius);
+  background: white;
+}
+
+/* Deutlicher Rahmen, wenn ein Feld aktiv ist (auch für Tastatur-Nutzer) */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--farbe-primaer);
+  outline-offset: 1px;
+}
+
+/* Checkbox und Text nebeneinander */
+.feld.checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.feld.checkbox input {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.feld.checkbox label {
+  font-weight: normal;
+}
+
+/* ===== Buttons ===== */
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--farbe-primaer);
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--farbe-primaer-dunkel);
+}
+
+.button-sekundaer {
+  background: white;
+  color: var(--farbe-text);
+  border: 1px solid var(--farbe-rand);
+}
+
+.button-sekundaer:hover {
+  background: var(--farbe-hintergrund);
+}
+
+.button-gefahr {
+  background: var(--farbe-gefahr);
+}
+
+.button-gefahr:hover {
+  background: #8f1c13;
+}
+
+
+
+/* ===== Suche und Filter ===== */
+.filterleiste {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filterleiste input {
+  flex: 1 1 200px;
+}
+
+.filterleiste select {
+  flex: 0 1 180px;
+}
+
+/* ===== Liste der Einträge (wird von app.js gefüllt) ===== */
+#liste {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.eintrag {
+  border: 1px solid var(--farbe-rand);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+
+.eintrag-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.eintrag h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.eintrag-details {
+  margin: 0.5rem 0 0.75rem;
+  font-size: 0.9rem;
+  color: var(--farbe-text-hell);
+}
+
+.eintrag-aktionen {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.eintrag-aktionen button {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+/* Farbige Etiketten für den Status */
+.badge {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-entwurf {
+  background: #eef0f2;
+  color: #4a5562;
+}
+
+.badge-aktiv {
+  background: #e0effa;
+  color: #174a6d;
+}
+
+.badge-geprueft {
+  background: #dcf3e4;
+  color: #1b6b3a;
+}
+
+/* Text, wenn keine Einträge gefunden wurden */
+.leer {
+  color: var(--farbe-text-hell);
+}
+
+
+
+/* ===== Ab 700px Breite: Formular in zwei Spalten ===== */
+@media (min-width: 700px) {
+  #formular {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Diese Elemente sollen trotzdem über beide Spalten gehen */
+  .feld-breit,
+  .feld.checkbox,
+  .buttons {
+    grid-column: 1 / -1;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+}

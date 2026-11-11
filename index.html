@@ -8,8 +8,7 @@
 </head>
 <body>
 
-
-      <!-- Kopfbereich mit Titel -->
+  <!-- Kopfbereich mit Titel -->
   <header>
     <h1>Mini-Verarbeitungsverzeichnis</h1>
     <p>Verzeichnis von Verarbeitungstätigkeiten nach Art. 30 DSGVO</p>
@@ -28,7 +27,8 @@
           <input type="text" id="bezeichnung" required placeholder="z. B. Bewerbermanagement">
         </div>
 
-        <div class="feld">
+        <!-- GEÄNDERT: zusätzliche Klasse "feld-breit" -->
+        <div class="feld feld-breit">
           <label for="zweck">Zweck der Verarbeitung *</label>
           <textarea id="zweck" rows="3" required></textarea>
         </div>
@@ -92,13 +92,14 @@
 
         <div class="buttons">
           <button type="submit" id="speichern-button">Speichern</button>
-          <button type="button" id="abbrechen-button" hidden>Abbrechen</button>
+          <!-- GEÄNDERT: Klasse "button-sekundaer" für schlichteres Aussehen -->
+          <button type="button" id="abbrechen-button" class="button-sekundaer" hidden>Abbrechen</button>
         </div>
 
       </form>
     </section>
 
-        <!-- Liste aller Einträge mit Suche und Statusfilter -->
+    <!-- Liste aller Einträge mit Suche und Statusfilter -->
     <section class="karte">
       <h2>Alle Einträge</h2>
 
@@ -119,7 +120,8 @@
     </section>
 
   </main>
-    <!-- Zuerst das PocketBase-SDK vom CDN laden, danach unseren eigenen Code -->
+
+  <!-- Zuerst das PocketBase-SDK vom CDN laden, danach unseren eigenen Code -->
   <script src="https://cdn.jsdelivr.net/npm/pocketbase/dist/pocketbase.umd.js"></script>
   <script src="app.js"></script>
 
