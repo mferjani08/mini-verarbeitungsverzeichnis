@@ -314,3 +314,13 @@ button:hover {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+     /* ===== Warnhinweis bei überfälliger Prüfung ===== */
+     .hinweis {
+       margin: 0.5rem 0 0;
+       padding: 0.4rem 0.6rem;
+       background: #fff4e5;
+       color: #8a4b00;
+       border-left: 4px solid #f59e0b;
+       border-radius: 4px;
+       font-size: 0.85rem;
+     }
