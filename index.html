@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini-Verarbeitungsverzeichnis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+      <!-- Kopfbereich mit Titel -->
+  <header>
+    <h1>Mini-Verarbeitungsverzeichnis</h1>
+    <p>Verzeichnis von Verarbeitungstätigkeiten nach Art. 30 DSGVO</p>
+  </header>
+
+  <main>
+
+    <!-- Formular zum Anlegen und Bearbeiten einer Verarbeitungstätigkeit -->
+    <section class="karte">
+      <h2 id="formular-titel">Neue Verarbeitungstätigkeit</h2>
+
+      <form id="formular">
+
+        <div class="feld">
+          <label for="bezeichnung">Bezeichnung *</label>
+          <input type="text" id="bezeichnung" required placeholder="z. B. Bewerbermanagement">
+        </div>
+
+        <div class="feld">
+          <label for="zweck">Zweck der Verarbeitung *</label>
+          <textarea id="zweck" rows="3" required></textarea>
+        </div>
+
+        <div class="feld">
+          <label for="rechtsgrundlage">Rechtsgrundlage *</label>
+          <select id="rechtsgrundlage" required>
+            <option value="">Bitte wählen …</option>
+            <option value="a">Art. 6 Abs. 1 lit. a – Einwilligung</option>
+            <option value="b">Art. 6 Abs. 1 lit. b – Vertrag</option>
+            <option value="c">Art. 6 Abs. 1 lit. c – Rechtliche Verpflichtung</option>
+            <option value="d">Art. 6 Abs. 1 lit. d – Lebenswichtige Interessen</option>
+            <option value="e">Art. 6 Abs. 1 lit. e – Öffentliche Aufgabe</option>
+            <option value="f">Art. 6 Abs. 1 lit. f – Berechtigtes Interesse</option>
+          </select>
+        </div>
+
+        <div class="feld">
+          <label for="betroffene_personen">Kategorien betroffener Personen</label>
+          <input type="text" id="betroffene_personen" placeholder="z. B. Bewerber, Kunden">
+        </div>
+
+        <div class="feld">
+          <label for="datenkategorien">Kategorien personenbezogener Daten</label>
+          <input type="text" id="datenkategorien" placeholder="z. B. Name, E-Mail, Lebenslauf">
+        </div>
+
+        <div class="feld">
+          <label for="empfaenger">Empfänger</label>
+          <input type="text" id="empfaenger" placeholder="z. B. Personalabteilung">
+        </div>
+
+        <div class="feld">
+          <label for="loeschfrist">Löschfrist</label>
+          <input type="text" id="loeschfrist" placeholder="z. B. 6 Monate nach Abschluss">
+        </div>
+
+        <div class="feld">
+          <label for="abteilung">Verantwortliche Abteilung</label>
+          <input type="text" id="abteilung" placeholder="z. B. Personal">
+        </div>
+
+        <div class="feld">
+          <label for="status">Status *</label>
+          <select id="status" required>
+            <option value="entwurf">Entwurf</option>
+            <option value="aktiv">Aktiv</option>
+            <option value="geprueft">Geprüft</option>
+          </select>
+        </div>
+
+        <div class="feld">
+          <label for="letzte_pruefung">Datum der letzten Prüfung</label>
+          <input type="date" id="letzte_pruefung">
+        </div>
+
+        <div class="feld checkbox">
+          <input type="checkbox" id="drittland">
+          <label for="drittland">Übermittlung in Drittländer</label>
+        </div>
+
+        <div class="buttons">
+          <button type="submit" id="speichern-button">Speichern</button>
+          <button type="button" id="abbrechen-button" hidden>Abbrechen</button>
+        </div>
+
+      </form>
+    </section>
+
+        <!-- Liste aller Einträge mit Suche und Statusfilter -->
+    <section class="karte">
+      <h2>Alle Einträge</h2>
+
+      <div class="filterleiste">
+        <input type="search" id="suche" placeholder="Suchen …" aria-label="Einträge durchsuchen">
+        <select id="status-filter" aria-label="Nach Status filtern">
+          <option value="">Alle Status</option>
+          <option value="entwurf">Entwurf</option>
+          <option value="aktiv">Aktiv</option>
+          <option value="geprueft">Geprüft</option>
+        </select>
+      </div>
+
+      <!-- Hier fügt app.js die Einträge als Karten ein -->
+      <div id="liste">
+        <p>Lade Einträge …</p>
+      </div>
+    </section>
+
+  </main>
+    <!-- Zuerst das PocketBase-SDK vom CDN laden, danach unseren eigenen Code -->
+  <script src="https://cdn.jsdelivr.net/npm/pocketbase/dist/pocketbase.umd.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
