@@ -23,9 +23,21 @@ const STATUS_TEXTE = {
 
 // ===== Elemente aus dem HTML holen =====
 const liste = document.getElementById('liste');
+const formular = document.getElementById('formular');
+const formularTitel = document.getElementById('formular-titel');
+const abbrechenButton = document.getElementById('abbrechen-button');
 
-// Alle geladenen Einträge merken wir uns hier (brauchen wir später für Suche und Filter)
+// Text- und Auswahlfelder: Name in PocketBase = id im HTML
+const FELDER = [
+  'bezeichnung', 'zweck', 'rechtsgrundlage', 'betroffene_personen',
+  'datenkategorien', 'empfaenger', 'loeschfrist', 'abteilung', 'status'
+];
+
+// Alle geladenen Einträge merken wir uns hier (für Bearbeiten, Suche und Filter)
 let alleEintraege = [];
+
+// id des Eintrags, der gerade bearbeitet wird (null = neuer Eintrag)
+let bearbeiteteId = null;
 
 
 // ===== Hilfsfunktionen =====
@@ -65,6 +77,7 @@ async function eintraegeLaden() {
   }
 }
 
+
 // ===== Einträge als Karten in die Seite schreiben =====
 function listeAnzeigen(eintraege) {
   // Sonderfall: keine Einträge
@@ -100,6 +113,108 @@ function listeAnzeigen(eintraege) {
     </article>
   `).join('');
 }
+
+
+// ===== Formular-Hilfsfunktionen =====
+
+// Liest alle Eingaben aus dem Formular und gibt sie als Objekt zurück
+function formularAuslesen() {
+  const daten = {};
+
+  for (const feld of FELDER) {
+    daten[feld] = document.getElementById(feld).value.trim();
+  }
+
+  // Checkbox: entscheidend ist "checked" (true/false), nicht "value"
+  daten.drittland = document.getElementById('drittland').checked;
+
+  // Datum: Das Feld liefert "2026-11-11", PocketBase speichert Datum mit Uhrzeit
+  const datum = document.getElementById('letzte_pruefung').value;
+  daten.letzte_pruefung = datum ? datum + ' 00:00:00.000Z' : '';
+
+  return daten;
+}
+
+// Schreibt einen vorhandenen Eintrag ins Formular (zum Bearbeiten)
+function formularFuellen(eintrag) {
+  for (const feld of FELDER) {
+    document.getElementById(feld).value = eintrag[feld];
+  }
+  document.getElementById('drittland').checked = eintrag.drittland;
+
+  // Aus "2026-11-11 20:09:13.000Z" nur die ersten 10 Zeichen nehmen: "2026-11-11"
+  document.getElementById('letzte_pruefung').value = eintrag.letzte_pruefung.slice(0, 10);
+}
+
+// Leert das Formular und wechselt zurück in den Modus "Neu anlegen"
+function formularZuruecksetzen() {
+  formular.reset();
+  bearbeiteteId = null;
+  formularTitel.textContent = 'Neue Verarbeitungstätigkeit';
+  abbrechenButton.hidden = true;
+}
+
+
+// ===== Speichern: neu anlegen oder bestehenden Eintrag ändern =====
+formular.addEventListener('submit', async (event) => {
+  // Verhindert, dass der Browser die Seite neu lädt
+  event.preventDefault();
+
+  const daten = formularAuslesen();
+
+  try {
+    if (bearbeiteteId) {
+      await pb.collection(COLLECTION).update(bearbeiteteId, daten);
+    } else {
+      await pb.collection(COLLECTION).create(daten);
+    }
+    formularZuruecksetzen();
+    await eintraegeLaden();
+  } catch (fehler) {
+    console.error('Fehler beim Speichern:', fehler);
+    alert('Speichern fehlgeschlagen. Bitte Eingaben prüfen.');
+  }
+});
+
+
+// ===== Klicks auf "Bearbeiten" und "Löschen" in der Liste =====
+liste.addEventListener('click', async (event) => {
+  // Wurde ein Button angeklickt? Wenn nicht: nichts tun
+  const button = event.target.closest('button');
+  if (!button) return;
+
+  const id = button.dataset.id;
+  const eintrag = alleEintraege.find(e => e.id === id);
+
+  // --- Bearbeiten: Eintrag ins Formular laden ---
+  if (button.dataset.aktion === 'bearbeiten') {
+    formularFuellen(eintrag);
+    bearbeiteteId = id;
+    formularTitel.textContent = 'Verarbeitungstätigkeit bearbeiten';
+    abbrechenButton.hidden = false;
+    formular.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // --- Löschen: erst nachfragen, dann löschen ---
+  if (button.dataset.aktion === 'loeschen') {
+    if (!confirm(`„${eintrag.bezeichnung}" wirklich löschen?`)) return;
+
+    try {
+      await pb.collection(COLLECTION).delete(id);
+      // Falls genau dieser Eintrag gerade bearbeitet wurde: Formular leeren
+      if (bearbeiteteId === id) formularZuruecksetzen();
+      await eintraegeLaden();
+    } catch (fehler) {
+      console.error('Fehler beim Löschen:', fehler);
+      alert('Löschen fehlgeschlagen.');
+    }
+  }
+});
+
+
+// ===== Abbrechen: Bearbeiten beenden =====
+abbrechenButton.addEventListener('click', formularZuruecksetzen);
+
 
 // ===== Start: beim Öffnen der Seite sofort laden =====
 eintraegeLaden();
