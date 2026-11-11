@@ -26,6 +26,9 @@ const liste = document.getElementById('liste');
 const formular = document.getElementById('formular');
 const formularTitel = document.getElementById('formular-titel');
 const abbrechenButton = document.getElementById('abbrechen-button');
+const suchfeld = document.getElementById('suche');
+const statusFilter = document.getElementById('status-filter');
+
 
 // Text- und Auswahlfelder: Name in PocketBase = id im HTML
 const FELDER = [
@@ -69,7 +72,7 @@ async function eintraegeLaden() {
     alleEintraege = await pb.collection(COLLECTION).getFullList({
       sort: 'bezeichnung'
     });
-    listeAnzeigen(alleEintraege);
+        filterAnwenden();
   } catch (fehler) {
     // Falls z. B. PocketBase nicht läuft
     console.error('Fehler beim Laden:', fehler);
@@ -215,6 +218,40 @@ liste.addEventListener('click', async (event) => {
 // ===== Abbrechen: Bearbeiten beenden =====
 abbrechenButton.addEventListener('click', formularZuruecksetzen);
 
+
+// ===== Suche und Statusfilter =====
+// Zeigt nur die Einträge an, die zu Suchbegriff und Status passen
+function filterAnwenden() {
+  const suchbegriff = suchfeld.value.trim().toLowerCase();
+  const status = statusFilter.value;
+
+  const gefiltert = alleEintraege.filter(eintrag => {
+    // Passt der Status? Leerer Wert bedeutet "Alle Status"
+    const statusPasst = status === '' || eintrag.status === status;
+
+    // Alle durchsuchbaren Texte zu einem langen Text zusammenfügen
+    const text = [
+      eintrag.bezeichnung,
+      eintrag.zweck,
+      eintrag.betroffene_personen,
+      eintrag.datenkategorien,
+      eintrag.empfaenger,
+      eintrag.abteilung
+    ].join(' ').toLowerCase();
+
+    // Kommt der Suchbegriff darin vor?
+    const suchePasst = text.includes(suchbegriff);
+
+    // Nur behalten, wenn beides passt
+    return statusPasst && suchePasst;
+  });
+
+  listeAnzeigen(gefiltert);
+}
+
+// Bei jedem getippten Zeichen und bei jeder Filteränderung neu filtern
+suchfeld.addEventListener('input', filterAnwenden);
+statusFilter.addEventListener('change', filterAnwenden);
 
 // ===== Start: beim Öffnen der Seite sofort laden =====
 eintraegeLaden();
