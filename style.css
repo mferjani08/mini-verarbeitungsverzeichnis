@@ -279,3 +279,38 @@ button:hover {
     font-size: 2rem;
   }
 }
+/* ===== Übersicht mit Zahlen ===== */
+/* Handy: 2 x 2 Kästchen */
+.statistik {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.zahl-box {
+  background: var(--farbe-karte);
+  border: 1px solid var(--farbe-rand);
+  border-radius: var(--radius);
+  padding: 1rem;
+  text-align: center;
+}
+
+.zahl {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--farbe-primaer);
+}
+
+.zahl-text {
+  font-size: 0.9rem;
+  color: var(--farbe-text-hell);
+}
+
+/* Ab 700px: alle 4 Kästchen in einer Reihe */
+@media (min-width: 700px) {
+  .statistik {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
