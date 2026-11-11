@@ -1,0 +1,5 @@
+# PocketBase-Programm: jeder lädt es selbst von pocketbase.io herunter
+pocketbase.exe
+
+# Datenbank mit allen Einträgen: niemals hochladen (Datenschutz!)
+pb_data/
